@@ -1,67 +1,66 @@
-"use client"
+"use client";
 
-import type React from "react"
-
-import { useState } from "react"
-import { motion } from "framer-motion"
-import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useAuth } from "@/hooks/use-auth"
-import { useTranslation } from "@/hooks/use-translation"
-import LanguageSelector from "@/components/language-selector"
-import LoginAvatar from "@/components/login-avatar"
+import type React from "react";
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useAuth } from "@/hooks/use-auth";
+import { useTranslation } from "@/hooks/use-translation";
+import LanguageSelector from "@/components/language-selector";
+import LoginAvatar from "@/components/login-avatar";
 
 export default function LoginPage() {
-  const [activeTab, setActiveTab] = useState<"login" | "signup">("login")
-  const [isLoading, setIsLoading] = useState(false)
-  const [formError, setFormError] = useState("")
+  const [activeTab, setActiveTab] = useState<"login" | "signup">("login");
+  const [isLoading, setIsLoading] = useState(false);
+  const [formError, setFormError] = useState("");
 
   // Login form state
-  const [loginEmail, setLoginEmail] = useState("")
-  const [loginPassword, setLoginPassword] = useState("")
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
 
   // Signup form state
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [confirmPassword, setConfirmPassword] = useState("")
-  const [age, setAge] = useState("")
-  const [religion, setReligion] = useState("")
-  const [emergencyContactName, setEmergencyContactName] = useState("")
-  const [emergencyContactPhone, setEmergencyContactPhone] = useState("")
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [age, setAge] = useState("");
+  const [religion, setReligion] = useState("");
+  const [emergency_contactName, setemergency_contactName] = useState("");
+  const [emergency_contactPhone, setemergency_contactPhone] = useState("");
 
-  const router = useRouter()
-  const { login, signup, continueAsGuest } = useAuth()
-  const { t, language, setLanguage } = useTranslation()
+  const router = useRouter();
+  const { login, signup, continueAsGuest } = useAuth();
+  const { t, language, setLanguage } = useTranslation();
 
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-    setFormError("")
+    e.preventDefault();
+    setIsLoading(true);
+    setFormError("");
 
     try {
-      await login(loginEmail, loginPassword)
-      router.push("/")
-    } catch (error) {
-      setFormError(t("login_error"))
+      await login(loginEmail, loginPassword);
+      router.push("/");
+    } catch (error: any) {
+      setFormError(error.message || t("login_error"));
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleSignup = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-    setFormError("")
+    e.preventDefault();
+    setIsLoading(true);
+    setFormError("");
 
     if (password !== confirmPassword) {
-      setFormError(t("password_mismatch"))
-      setIsLoading(false)
-      return
+      setFormError(t("password_mismatch"));
+      setIsLoading(false);
+      return;
     }
 
     try {
@@ -69,25 +68,25 @@ export default function LoginPage() {
         name,
         email,
         password,
-        age: Number.parseInt(age),
-        religion,
-        emergencyContact: {
-          name: emergencyContactName,
-          phone: emergencyContactPhone,
+        age: Number.parseInt(age) || undefined,
+        religion: religion || undefined,
+        emergency_contact: {
+          name: emergency_contactName,
+          phone: emergency_contactPhone,
         },
-      })
-      router.push("/")
-    } catch (error) {
-      setFormError(t("signup_error"))
+      });
+      router.push("/");
+    } catch (error: any) {
+      setFormError(error.message || t("signup_error"));
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleGuestAccess = () => {
-    continueAsGuest()
-    router.push("/")
-  }
+    continueAsGuest();
+    router.push("/");
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-50 to-orange-100 flex flex-col items-center justify-center p-4">
@@ -237,14 +236,14 @@ export default function LoginPage() {
                   <div className="grid grid-cols-2 gap-4">
                     <Input
                       placeholder={t("emergency_name_placeholder")}
-                      value={emergencyContactName}
-                      onChange={(e) => setEmergencyContactName(e.target.value)}
+                      value={emergency_contactName}
+                      onChange={(e) => setemergency_contactName(e.target.value)}
                       required
                     />
                     <Input
                       placeholder={t("emergency_phone_placeholder")}
-                      value={emergencyContactPhone}
-                      onChange={(e) => setEmergencyContactPhone(e.target.value)}
+                      value={emergency_contactPhone}
+                      onChange={(e) => setemergency_contactPhone(e.target.value)}
                       required
                     />
                   </div>
@@ -271,6 +270,5 @@ export default function LoginPage() {
         </Card>
       </motion.div>
     </div>
-  )
+  );
 }
-
